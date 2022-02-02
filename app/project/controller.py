@@ -20,9 +20,7 @@ from munch import Munch
 
 from viktor import UserException
 from viktor import ViktorController
-from viktor.api_v1 import API
 from viktor.core import progress_message
-from viktor.result import SetParametersResult
 from viktor.views import WebResult
 from viktor.views import WebView
 from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_multiple_graphs
@@ -46,7 +44,7 @@ class ProjectController(ViktorController):
 
         cpts = []
         for cpt in cpt_entities_selected:
-            cpts.append(CPT(cpt.last_saved_params, cpt.id))
+            cpts.append(CPT(cpt.last_saved_params))
 
         if not cpt_entities_selected:
             raise UserException('Please select CPTs for comparison')

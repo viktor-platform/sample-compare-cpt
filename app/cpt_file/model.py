@@ -22,9 +22,8 @@ from viktor.geo import GEFData
 
 class CPT:
     """"CPT model used for visualizing the soil layout"""
-    def __init__(self, cpt_params, entity_id=None, **kwargs):
+    def __init__(self, cpt_params, **kwargs):
         params = unmunchify(cpt_params)
         self.params = params
         self.parsed_cpt = GEFData(self.params)
         self.name = params['name']
-        self.id = entity_id
