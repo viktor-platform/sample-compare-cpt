@@ -14,7 +14,7 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from viktor.viktor import ViktorController
+from viktor.core import ViktorController
 
 
 class ProjectFolderController(ViktorController):
@@ -22,3 +22,4 @@ class ProjectFolderController(ViktorController):
     label = "Projects"
     children = ['Project']
     show_children_as = 'Table'
+    viktor_convert_entity_field = True

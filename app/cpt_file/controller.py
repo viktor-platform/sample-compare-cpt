@@ -14,16 +14,28 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
-from viktor.viktor import ParamsFromFile
-from viktor.viktor import ViktorController
+from viktor import File
+from viktor import ParamsFromFile
+from viktor import UserException
+from viktor import ViktorController
+from viktor.geo import GEFFile
+from viktor.geo import GEFParsingException
 
 
 class CPTFileController(ViktorController):
     """Controller class which acts as interface for the Sample entity type."""
     label = "CPT File"
+    ADDITIONAL_COLUMNS = []
+    viktor_convert_entity_field = True
 
     @ParamsFromFile(file_types=['.gef'])
-    def process_file(self, **kwargs) -> dict:
+    def process_file(self, file: File, **kwargs) -> dict:
         """Process the CPT file when it is first uploaded"""
-        return {}
+        cpt_file = GEFFile(file.getvalue("ISO-8859-1"))
+
+        try:
+            cpt_data_object = cpt_file.parse(additional_columns=self.ADDITIONAL_COLUMNS, return_gef_data_obj=True)
+        except GEFParsingException as parsing_exception:
+            raise UserException(f"CPT Parsing: {str(parsing_exception)}") from parsing_exception
+
+        return cpt_data_object.serialize()

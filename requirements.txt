@@ -1,1 +1,2 @@
 # viktor==12.9.0
+plotly

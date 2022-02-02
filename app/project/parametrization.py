@@ -15,17 +15,21 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+from viktor.parametrization import ChildEntityMultiSelectField
+from viktor.parametrization import LineBreak
 from viktor.parametrization import Parametrization
-from viktor.parametrization import Text
+from viktor.parametrization import Section
+from viktor.parametrization import Tab
+from viktor.parametrization import ToggleButton
 
 
 class ProjectParametrization(Parametrization):
     """Defines the input fields in left-side of the web UI in the Sample entity (Editor)."""
     visualization = Tab('Visualization')
-    visualization.map = Section('Map')
-    visualization.map.show_labels = ToggleButton('Show labels', default=True)
-    visualization.map.label_size = NumberField('Label size', default=5, min=1, max=20)
-    visualization.map.lb = LineBreak()
-    visualization.map.show_validity_range = ToggleButton('Show CPT validity range')
-    visualization.map.cpt_validity_range = OptionField('CPT validity range', options=VALIDITY_RANGES, suffix='m',
-                                                       default=25)
+    visualization.comparison = Section('Compare CPTs')
+    visualization.comparison.selected_cpts = ChildEntityMultiSelectField('Select CPTs that you want to compare',
+                                                                         entity_type_names=['CPTFile'], flex=60)
+    visualization.comparison.lb1 = LineBreak()
+    visualization.comparison.single_graph = ToggleButton('Plot selected cpts in a single graph', default=False)
+    visualization.comparison.draw_rf = ToggleButton('Plot Rf signal', default=False)

@@ -14,36 +14,44 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from io import StringIO
+
 from munch import Munch
 
-from viktor.viktor import UserException
-from viktor.viktor import ViktorController
-from viktor.viktor.api_v1 import API
-from viktor.viktor.core import progress_message
-from viktor.viktor.views import WebResult
-from viktor.viktor.views import WebView
+from viktor import UserException
+from viktor import ViktorController
+from viktor.api_v1 import API
+from viktor.core import progress_message
+from viktor.result import SetParametersResult
+from viktor.views import WebResult
+from viktor.views import WebView
+from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_multiple_graphs
+from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_single_graph
 from .parametrization import ProjectParametrization
+from ..cpt_file.model import CPT
 
 
 class ProjectController(ViktorController):
     """Controller class which acts as interface for the Sample entity type."""
     label = "Project"
+    children = ['CPTFile']
+    show_children_as = 'Table'
     parametrization = ProjectParametrization
     viktor_convert_entity_field = True
 
     @WebView('Compare CPTs', duration_guess=5)
     def compare_cpts(self, params: Munch, **kwargs) -> WebResult:
         """Visualizes multiple cpt that is selected in an optionfield, for comparing"""
-        soil_mapping = self.get_soil_mapping(params)
-        cpt_entity_ids = params.visualization.comparison.selected_cpts
-        if not cpt_entity_ids:
+        cpt_entities_selected = params.visualization.comparison.selected_cpts
+
+        cpts = []
+        for cpt in cpt_entities_selected:
+            cpts.append(CPT(cpt.last_saved_params, cpt.id))
+
+        if not cpt_entities_selected:
             raise UserException('Please select CPTs for comparison')
 
         progress_message("Gathering CPTs to add to comparison")
-        cpts = []
-        for cpt_id in cpt_entity_ids:
-            cpt_entity = API().get_entity(cpt_id)
-            cpts.append(CPT(cpt_entity.last_saved_params, soil_mapping, cpt_id))
 
         if params.visualization.comparison.single_graph:
             figure = visualize_multiple_cpts_in_single_graph(cpts, draw_rf=params.visualization.comparison.draw_rf)
