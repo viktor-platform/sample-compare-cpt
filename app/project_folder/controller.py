@@ -14,6 +14,11 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from .project_folder.controller import ProjectFolderController
-from .project.controller import ProjectController
-from .cpt_file.controller import CPTFileController
+from viktor.viktor import ViktorController
+
+
+class ProjectFolderController(ViktorController):
+    """Controller class which acts as interface for the Sample entity type."""
+    label = "Projects"
+    children = ['Project']
+    show_children_as = 'Table'

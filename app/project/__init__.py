@@ -1,4 +1,4 @@
-"""Copyright (c) 2022 VIKTOR B.V.
+""""Copyright (c) 2022 VIKTOR B.V.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
@@ -14,13 +14,3 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from viktor.core import ViktorController
-
-from .parametrization import SampleParametrization
-
-
-class SampleController(ViktorController):
-    """Controller class which acts as interface for the Sample entity type."""
-    label = "Sample"
-    parametrization = SampleParametrization
-    viktor_convert_entity_field = True
