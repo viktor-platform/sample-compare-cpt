@@ -40,16 +40,12 @@ class ProjectController(ViktorController):
     @WebView('Compare CPTs', duration_guess=5)
     def compare_cpts(self, params: Munch, **kwargs) -> WebResult:
         """Visualizes multiple cpt that is selected in an optionfield, for comparing"""
-        cpt_entities_selected = params.selected_cpts
-
-        cpts = []
-        for cpt in cpt_entities_selected:
-            cpts.append(CPT(cpt.last_saved_params))
-
-        if not cpt_entities_selected:
+        if not params.selected_cpts:
             raise UserException('Please select CPTs for comparison')
 
         progress_message("Gathering CPTs to add to comparison")
+
+        cpts = [CPT(cpt.last_saved_params) for cpt in params.selected_cpts]
 
         if params.single_graph:
             figure = visualize_multiple_cpts_in_single_graph(cpts, draw_rf=params.draw_rf)
