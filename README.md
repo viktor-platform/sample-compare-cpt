@@ -1,25 +1,24 @@
 ![](https://img.shields.io/badge/SDK-v12.9.0-blue) <Please check version is the same as specified in requirements.txt>
 
-# Title of App (concept that it is trying to show)
-This sample app shows ... <basic one line intro here>
+#Compare CPT files
+This sample app shows how to compare two CPT's (.gef) 
 
-More elaborate description here. Lorem ipsum dolor sit amet, consectetur 
-adipiscing elit. Vivamus libero leo, pellentesque ornare, adipiscing vitae, 
-rhoncus commodo, nulla. Fusce quis ipsum. Nulla neque massa, feugiat sed, 
-commodo in, adipiscing ut, est. In fermentum mattis ligula. Nulla ipsum.
+In this app you can create multiple projects. In each project you can upload CPT files and compare the Qc signals. 
+It is possible to plot these signals in 1 figure on in individual figures. Also there is an option to plot the cone resistance.  
 
+![](resources/cpt_compare_example.png)
 
-![](manifest/background_image.jpg) <Please update the background image in the manifest to something relevant to the app>
+here is a gif doing the folowing tasks:
+- upload two .gef files
+- plot them in individual graphs
+- plot them in one graph
 
-## App structure <please provide if more than a single entity type is present>
+![](resources/compare_cpts.gif)
+
+## App structure
 
 ```
-Universe: has a controller but no parametrization so has no editor
-  └─ System: has a controller and a parametrization 
-     ├── Analysis: 
-     │     ├── controller with a WebAndDataView: uses data from System and Planet
-     │     └── parametrisation with a SiblingOptionField:  retrieves info from Planet
-     └── Planet:   
-           ├── controller with no view
-           └── Planet: has a controller and a parametrization            
+project_folder: has projects as its children
+  └─ project: has cpt files as its children and can compare them in graphs
+     └── cpt_file: .gef files (no view/parametrization)     
 ```
