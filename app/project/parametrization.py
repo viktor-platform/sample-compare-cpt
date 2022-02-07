@@ -19,17 +19,13 @@ SOFTWARE.
 from viktor.parametrization import ChildEntityMultiSelectField
 from viktor.parametrization import LineBreak
 from viktor.parametrization import Parametrization
-from viktor.parametrization import Section
-from viktor.parametrization import Tab
 from viktor.parametrization import ToggleButton
 
 
 class ProjectParametrization(Parametrization):
     """Defines the input fields in left-side of the web UI in the Sample entity (Editor)."""
-    visualization = Tab('Visualization')
-    visualization.comparison = Section('Compare CPTs')
-    visualization.comparison.selected_cpts = ChildEntityMultiSelectField('Select CPTs that you want to compare',
-                                                                         entity_type_names=['CPTFile'], flex=60)
-    visualization.comparison.lb1 = LineBreak()
-    visualization.comparison.single_graph = ToggleButton('Plot selected cpts in a single graph', default=False)
-    visualization.comparison.draw_rf = ToggleButton('Plot Rf signal', default=False)
+    selected_cpts = ChildEntityMultiSelectField('Select CPTs that you want to compare',
+                                                entity_type_names=['CPTFile'], flex=60)
+    lb1 = LineBreak()
+    single_graph = ToggleButton('Single graph', default=False)
+    draw_rf = ToggleButton('Plot Rf signal', default=False)

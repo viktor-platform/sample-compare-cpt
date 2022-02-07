@@ -35,6 +35,7 @@ def visualize_multiple_cpts_in_single_graph(cpts: List[CPT], draw_rf: bool = Fal
     """
     color_cycle = cycle(plt.colors.qualitative.G10)
 
+    # make subplots
     if draw_rf:
         fig = make_subplots(rows=1, cols=2, shared_yaxes=True,
                             subplot_titles=("cone resistance", "friction number"))
@@ -44,6 +45,8 @@ def visualize_multiple_cpts_in_single_graph(cpts: List[CPT], draw_rf: bool = Fal
     for i, cpt in enumerate(cpts):
         progress_message(f"Adding cpt {cpt.name} to comparison", percentage=(i/len(cpts)*100))
         selected_color = next(color_cycle)
+
+        # Plot the Qc signal
         fig.add_trace(
             go.Scatter(name=f'Qc {cpt.name}',
                        hovertext=f'{cpt.name}',
@@ -54,6 +57,8 @@ def visualize_multiple_cpts_in_single_graph(cpts: List[CPT], draw_rf: bool = Fal
                        legendgroup=f'{cpt.name}'),
             row=1, col=1
         )
+
+        # Draw resistance if requested
         if draw_rf:
             fig.add_trace(
                 go.Scatter(name=f'Rf {cpt.name}',
@@ -90,6 +95,8 @@ def visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT], draw_rf: bool = 
     Plot the Qc signal for multiple cpts as a collection of subplots on a horizontal layout. If requested,
     also draw a series of subplots graph for the resistances.
     """
+
+    # make subplots
     if draw_rf:
         fig = make_subplots(rows=2, cols=len(cpts), shared_yaxes=True, shared_xaxes='rows',
                             column_titles=[f'{cpt.name[:-4]}' for cpt in cpts])
@@ -99,6 +106,8 @@ def visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT], draw_rf: bool = 
 
     for i, cpt in enumerate(cpts, start=1):
         progress_message(f"Adding Qc plot for cpt {cpt.name} to comparison", percentage=((i-1)/len(cpts)*100))
+
+        # Plot the Qc signal
         fig.add_trace(
             go.Scatter(
                 name=f'Qc {cpt.name}',
@@ -109,6 +118,8 @@ def visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT], draw_rf: bool = 
                 line=dict(color='mediumblue', width=1.25)),
             row=1, col=i
         )
+
+    # Draw resistance if requested
     if draw_rf:
         for i, cpt in enumerate(cpts, start=1):
             progress_message(f"Adding Rf plot for cpt {cpt.name} to comparison", percentage=((i-1)/len(cpts)*100))

@@ -34,13 +34,13 @@ class ProjectController(ViktorController):
     label = "Project"
     children = ['CPTFile']
     show_children_as = 'Table'
-    parametrization = ProjectParametrization
+    parametrization = ProjectParametrization(width=20)
     viktor_convert_entity_field = True
 
     @WebView('Compare CPTs', duration_guess=5)
     def compare_cpts(self, params: Munch, **kwargs) -> WebResult:
         """Visualizes multiple cpt that is selected in an optionfield, for comparing"""
-        cpt_entities_selected = params.visualization.comparison.selected_cpts
+        cpt_entities_selected = params.selected_cpts
 
         cpts = []
         for cpt in cpt_entities_selected:
@@ -51,9 +51,9 @@ class ProjectController(ViktorController):
 
         progress_message("Gathering CPTs to add to comparison")
 
-        if params.visualization.comparison.single_graph:
-            figure = visualize_multiple_cpts_in_single_graph(cpts, draw_rf=params.visualization.comparison.draw_rf)
+        if params.single_graph:
+            figure = visualize_multiple_cpts_in_single_graph(cpts, draw_rf=params.draw_rf)
         else:
-            figure = visualize_multiple_cpts_in_multiple_graphs(cpts, draw_rf=params.visualization.comparison.draw_rf)
+            figure = visualize_multiple_cpts_in_multiple_graphs(cpts, draw_rf=params.draw_rf)
 
         return WebResult(html=StringIO(figure.to_html()))
