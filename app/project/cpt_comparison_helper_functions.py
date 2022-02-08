@@ -27,6 +27,13 @@ from viktor.core import progress_message
 from ..cpt_file.model import CPT
 
 
+def visualize_multiple_cpts_in_graph(cpts: List[CPT], single_graph: bool = False ,draw_rf: bool = False) -> go.Figure:
+    if single_graph:
+        return visualize_multiple_cpts_in_single_graph(cpts, draw_rf=draw_rf)
+    else:
+        return visualize_multiple_cpts_in_multiple_graphs(cpts, draw_rf=draw_rf)
+
+
 def visualize_multiple_cpts_in_single_graph(cpts: List[CPT], draw_rf: bool = False) -> go.Figure:
     """
     Plot the Qc signal for multiple cpts in a single graph for comparison purposes. If requested, also draw

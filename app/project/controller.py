@@ -23,6 +23,7 @@ from viktor import ViktorController
 from viktor.core import progress_message
 from viktor.views import WebResult
 from viktor.views import WebView
+from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_graph
 from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_multiple_graphs
 from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_single_graph
 from .parametrization import ProjectParametrization
@@ -40,16 +41,23 @@ class ProjectController(ViktorController):
     @WebView('Compare CPTs', duration_guess=5)
     def compare_cpts(self, params: Munch, **kwargs) -> WebResult:
         """Visualizes multiple cpt that is selected in an optionfield, for comparing"""
-        if not params.selected_cpts:
-            raise UserException('Please select CPTs for comparison')
 
         progress_message("Gathering CPTs to add to comparison")
 
-        cpts = [CPT(cpt.last_saved_params) for cpt in params.selected_cpts]
+        cpts = self.get_all_cpts(params)
 
-        if params.single_graph:
-            figure = visualize_multiple_cpts_in_single_graph(cpts, draw_rf=params.draw_rf)
-        else:
-            figure = visualize_multiple_cpts_in_multiple_graphs(cpts, draw_rf=params.draw_rf)
+        figure = visualize_multiple_cpts_in_graph(cpts=cpts, single_graph=params.single_graph, draw_rf=params.draw_rf)
 
         return WebResult(html=StringIO(figure.to_html()))
+
+    @staticmethod
+    def get_all_cpts(params):
+        """"retrieve params from selected cpts and create new cpt objects"""
+        if not params.selected_cpts:
+            raise UserException('Please select CPTs for comparison')
+
+        cpts = []
+        for cpt in params.selected_cpts:
+            cpts.append(CPT(cpt.last_saved_params))
+
+        return cpts
