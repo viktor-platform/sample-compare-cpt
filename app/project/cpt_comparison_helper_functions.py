@@ -27,30 +27,26 @@ from viktor.core import progress_message
 from ..cpt_file.model import CPT
 
 
-def visualize_multiple_cpts_in_graph(cpts: List[CPT], single_graph: bool = False ,draw_rf: bool = False) -> go.Figure:
+def visualize_multiple_cpts_in_graph(cpts: List[CPT], single_graph: bool = False) -> go.Figure:
+    """"Plot the Qc and rf signal for cpts. This can be plotted in a single or multiple plots."""
     if single_graph:
-        return visualize_multiple_cpts_in_single_graph(cpts, draw_rf=draw_rf)
-    else:
-        return visualize_multiple_cpts_in_multiple_graphs(cpts, draw_rf=draw_rf)
+        return __visualize_multiple_cpts_in_single_graph(cpts)
+    return __visualize_multiple_cpts_in_multiple_graphs(cpts)
 
 
-def visualize_multiple_cpts_in_single_graph(cpts: List[CPT], draw_rf: bool = False) -> go.Figure:
+def __visualize_multiple_cpts_in_single_graph(cpts: List[CPT]) -> go.Figure:
     """
-    Plot the Qc signal for multiple cpts in a single graph for comparison purposes. If requested, also draw
-    a graph for the resistances. In the latter case signal are added per cpt and can be swichted off
-    through the legend, the y-axis is shared.
+    Plot the Qc signal for multiple cpts in a single graph for comparison purposes.
+    In the latter case signal are added per cpt and can be switched off through the legend, the y-axis is shared.
     """
     color_cycle = cycle(plt.colors.qualitative.G10)
 
     # make subplots
-    if draw_rf:
-        fig = make_subplots(rows=1, cols=2, shared_yaxes=True,
-                            subplot_titles=("cone resistance", "friction number"))
-    else:
-        fig = make_subplots(rows=1, cols=1)
+    fig = make_subplots(rows=1, cols=2, shared_yaxes=True,
+                        subplot_titles=("cone resistance", "friction number"))
 
     for i, cpt in enumerate(cpts):
-        progress_message(f"Adding cpt {cpt.name} to comparison", percentage=(i/len(cpts)*100))
+        progress_message(f"Adding cpt {cpt.name} to comparison", percentage=(i / len(cpts) * 100))
         selected_color = next(color_cycle)
 
         # Plot the Qc signal
@@ -66,17 +62,16 @@ def visualize_multiple_cpts_in_single_graph(cpts: List[CPT], draw_rf: bool = Fal
         )
 
         # Draw resistance if requested
-        if draw_rf:
-            fig.add_trace(
-                go.Scatter(name=f'Rf {cpt.name}',
-                           hovertext=f'{cpt.name}',
-                           x=[rfval * 100 if rfval else rfval for rfval in cpt.parsed_cpt.Rf],
-                           y=[el * 1e-3 if el else el for el in cpt.parsed_cpt.elevation],
-                           mode='lines',
-                           line=dict(color=selected_color, width=1.25),
-                           legendgroup=f'{cpt.name}'),
-                row=1, col=2
-            )
+        fig.add_trace(
+            go.Scatter(name=f'Rf {cpt.name}',
+                       hovertext=f'{cpt.name}',
+                       x=[rfval * 100 if rfval else rfval for rfval in cpt.parsed_cpt.Rf],
+                       y=[el * 1e-3 if el else el for el in cpt.parsed_cpt.elevation],
+                       mode='lines',
+                       line=dict(color=selected_color, width=1.25),
+                       legendgroup=f'{cpt.name}'),
+            row=1, col=2
+        )
 
     # Format axes and grids per subplot
     standard_grid_options = dict(showgrid=True, gridwidth=1, gridcolor='DarkGrey')
@@ -85,34 +80,28 @@ def visualize_multiple_cpts_in_single_graph(cpts: List[CPT], draw_rf: bool = Fal
     fig.update_xaxes(row=1, col=1, **standard_line_options, **standard_grid_options,
                      range=[0, 30], tick0=0, dtick=1, title_text="Qc [MPa]")
     fig.update_yaxes(row=1, col=1, **standard_grid_options, title_text="Depth [m] w.r.t. NAP",
-                     tick0=floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts])/1e3)-5, dtick=1)
-    if draw_rf:
-        fig.update_xaxes(row=1, col=2, **standard_line_options, **standard_grid_options,
-                         range=[10, 0], tick0=0, dtick=1, title_text="Rf [%]")
-        fig.update_yaxes(row=1, col=2, **standard_grid_options,
-                         tick0=floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts])/1e3)-5, dtick=1)
+                     tick0=floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5, dtick=1)
+    fig.update_xaxes(row=1, col=2, **standard_line_options, **standard_grid_options,
+                     range=[10, 0], tick0=0, dtick=1, title_text="Rf [%]")
+    fig.update_yaxes(row=1, col=2, **standard_grid_options,
+                     tick0=floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5, dtick=1)
 
     fig.update_layout(template='plotly_white')  # Forces white background
 
     return fig
 
 
-def visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT], draw_rf: bool = False) -> go.Figure:
+def __visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT]) -> go.Figure:
     """
-    Plot the Qc signal for multiple cpts as a collection of subplots on a horizontal layout. If requested,
-    also draw a series of subplots graph for the resistances.
+    Plot the Qc signal for multiple cpts as a collection of subplots on a horizontal layout.
     """
 
     # make subplots
-    if draw_rf:
-        fig = make_subplots(rows=2, cols=len(cpts), shared_yaxes=True, shared_xaxes='rows',
-                            column_titles=[f'{cpt.name[:-4]}' for cpt in cpts])
-    else:
-        fig = make_subplots(rows=1, cols=len(cpts), shared_yaxes=True, shared_xaxes='rows',
-                            column_titles=[f'{cpt.name[:-4]}' for cpt in cpts])
+    fig = make_subplots(rows=2, cols=len(cpts), shared_yaxes=True, shared_xaxes='rows',
+                        column_titles=[f'{cpt.name[:-4]}' for cpt in cpts])
 
     for i, cpt in enumerate(cpts, start=1):
-        progress_message(f"Adding Qc plot for cpt {cpt.name} to comparison", percentage=((i-1)/len(cpts)*100))
+        progress_message(f"Adding Qc plot for cpt {cpt.name} to comparison", percentage=((i - 1) / len(cpts) * 100))
 
         # Plot the Qc signal
         fig.add_trace(
@@ -127,18 +116,17 @@ def visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT], draw_rf: bool = 
         )
 
     # Draw resistance if requested
-    if draw_rf:
-        for i, cpt in enumerate(cpts, start=1):
-            progress_message(f"Adding Rf plot for cpt {cpt.name} to comparison", percentage=((i-1)/len(cpts)*100))
-            fig.add_trace(
-                go.Scatter(
-                    name='Friction number',
-                    x=[rfval * 100 if rfval else rfval for rfval in cpt.parsed_cpt.Rf],
-                    y=[el * 1e-3 if el else el for el in cpt.parsed_cpt.elevation],
-                    mode='lines',
-                    line=dict(color='red', width=1.25)),
-                row=2, col=i
-            )
+    for i, cpt in enumerate(cpts, start=1):
+        progress_message(f"Adding Rf plot for cpt {cpt.name} to comparison", percentage=((i - 1) / len(cpts) * 100))
+        fig.add_trace(
+            go.Scatter(
+                name='Friction number',
+                x=[rfval * 100 if rfval else rfval for rfval in cpt.parsed_cpt.Rf],
+                y=[el * 1e-3 if el else el for el in cpt.parsed_cpt.elevation],
+                mode='lines',
+                line=dict(color='red', width=1.25)),
+            row=2, col=i
+        )
 
     # Format axes and grids per subplot
     standard_grid_options = dict(showgrid=True, gridwidth=1, gridcolor='DarkGrey')
@@ -157,10 +145,10 @@ def visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT], draw_rf: bool = 
     fig.update_yaxes(
         **standard_grid_options,
         range=[
-            floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts])/1e3)-5,
-            ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts])/1e3)+1
+            floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5,
+            ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1
         ],
-        tick0=ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts])/1e3)+1,
+        tick0=ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1,
         dtick=1
     )
 
@@ -169,23 +157,22 @@ def visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT], draw_rf: bool = 
         **standard_grid_options,
         title_text="Depth [m]",
         range=[
-            floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts])/1e3)-5,
-            ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts])/1e3)+1
+            floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5,
+            ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1
         ],
-        tick0=ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts])/1e3)+1,
+        tick0=ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1,
         dtick=1
     )
 
-    if draw_rf:
-        fig.update_xaxes(
-            row=2,
-            **standard_line_options,
-            **standard_grid_options,
-            range=[10, 0],
-            tick0=0,
-            dtick=1,
-            title_text="Rf [%]"
-        )
+    fig.update_xaxes(
+        row=2,
+        **standard_line_options,
+        **standard_grid_options,
+        range=[10, 0],
+        tick0=0,
+        dtick=1,
+        title_text="Rf [%]"
+    )
 
     # Set subplot titles to a lower fontsize, because they are usually long names
     for subplot_title in fig['layout']['annotations']:

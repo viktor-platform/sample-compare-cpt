@@ -24,8 +24,6 @@ from viktor.core import progress_message
 from viktor.views import WebResult
 from viktor.views import WebView
 from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_graph
-from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_multiple_graphs
-from .cpt_comparison_helper_functions import visualize_multiple_cpts_in_single_graph
 from .parametrization import ProjectParametrization
 from ..cpt_file.model import CPT
 
@@ -41,12 +39,9 @@ class ProjectController(ViktorController):
     @WebView('Compare CPTs', duration_guess=5)
     def compare_cpts(self, params: Munch, **kwargs) -> WebResult:
         """Visualizes multiple cpt that is selected in an optionfield, for comparing"""
-
         progress_message("Gathering CPTs to add to comparison")
-
         cpts = self.get_all_cpts(params)
-
-        figure = visualize_multiple_cpts_in_graph(cpts=cpts, single_graph=params.single_graph, draw_rf=params.draw_rf)
+        figure = visualize_multiple_cpts_in_graph(cpts=cpts, single_graph=params.single_graph)
 
         return WebResult(html=StringIO(figure.to_html()))
 

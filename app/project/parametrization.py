@@ -28,4 +28,3 @@ class ProjectParametrization(Parametrization):
                                                 entity_type_names=['CPTFile'], flex=60)
     lb1 = LineBreak()
     single_graph = ToggleButton('Single graph', default=False)
-    draw_rf = ToggleButton('Plot Rf signal', default=False)
