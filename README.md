@@ -1,6 +1,6 @@
 ![](https://img.shields.io/badge/SDK-v12.9.0-blue) <Please check version is the same as specified in requirements.txt>
 
-#Compare CPT files
+# Compare CPT files
 This sample app shows how to compare two CPT's (.gef) 
 
 In this app you can create multiple projects. In each project you can upload CPT files and compare the Qc signals. 
