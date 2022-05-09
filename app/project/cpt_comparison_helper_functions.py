@@ -14,6 +14,7 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import sys
 from itertools import cycle
 from math import ceil
 from math import floor
@@ -54,7 +55,7 @@ def __visualize_multiple_cpts_in_single_graph(cpts: List[CPT]) -> go.Figure:
             go.Scatter(name=f'Qc {cpt.name}',
                        hovertext=f'{cpt.name}',
                        x=cpt.parsed_cpt.qc,
-                       y=[el * 1e-3 for el in cpt.parsed_cpt.elevation],
+                       y=[el * 1e-3 if el else el for el in cpt.parsed_cpt.elevation],
                        mode='lines',
                        line=dict(color=selected_color, width=1.25),
                        legendgroup=f'{cpt.name}'),
@@ -80,11 +81,11 @@ def __visualize_multiple_cpts_in_single_graph(cpts: List[CPT]) -> go.Figure:
     fig.update_xaxes(row=1, col=1, **standard_line_options, **standard_grid_options,
                      range=[0, 30], tick0=0, dtick=1, title_text="Qc [MPa]")
     fig.update_yaxes(row=1, col=1, **standard_grid_options, title_text="Depth [m] w.r.t. NAP",
-                     tick0=floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5, dtick=1)
+                     tick0=floor(min([cpt.parsed_cpt.elevation[-1] if cpt.parsed_cpt.elevation[-1] else sys.float_info.max for cpt in cpts]) / 1e3) - 5, dtick=1)
     fig.update_xaxes(row=1, col=2, **standard_line_options, **standard_grid_options,
                      range=[10, 0], tick0=0, dtick=1, title_text="Rf [%]")
     fig.update_yaxes(row=1, col=2, **standard_grid_options,
-                     tick0=floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5, dtick=1)
+                     tick0=floor(min([cpt.parsed_cpt.elevation[-1] if cpt.parsed_cpt.elevation[-1] else sys.float_info.max for cpt in cpts]) / 1e3) - 5, dtick=1)
 
     fig.update_layout(template='plotly_white')  # Forces white background
 
@@ -109,7 +110,7 @@ def __visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT]) -> go.Figure:
                 name=f'Qc {cpt.name}',
                 hovertext=f'{cpt.name}',
                 x=cpt.parsed_cpt.qc,
-                y=[el * 1e-3 for el in cpt.parsed_cpt.elevation],
+                y=[el * 1e-3 if el else el for el in cpt.parsed_cpt.elevation],
                 mode='lines',
                 line=dict(color='mediumblue', width=1.25)),
             row=1, col=i
@@ -146,9 +147,9 @@ def __visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT]) -> go.Figure:
         **standard_grid_options,
         range=[
             floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5,
-            ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1
+            ceil(max([cpt.parsed_cpt.elevation[0] if cpt.parsed_cpt.elevation[0] else sys.float_info.min for cpt in cpts]) / 1e3) + 1
         ],
-        tick0=ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1,
+        tick0=ceil(max([cpt.parsed_cpt.elevation[0] if cpt.parsed_cpt.elevation[0] else sys.float_info.min for cpt in cpts]) / 1e3) + 1,
         dtick=1
     )
 
@@ -157,10 +158,10 @@ def __visualize_multiple_cpts_in_multiple_graphs(cpts: List[CPT]) -> go.Figure:
         **standard_grid_options,
         title_text="Depth [m]",
         range=[
-            floor(min([cpt.parsed_cpt.elevation[-1] for cpt in cpts]) / 1e3) - 5,
-            ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1
+            floor(min([cpt.parsed_cpt.elevation[-1] if cpt.parsed_cpt.elevation[-1] else sys.float_info.max for cpt in cpts]) / 1e3) - 5,
+            ceil(max([cpt.parsed_cpt.elevation[0] if cpt.parsed_cpt.elevation[0] else sys.float_info.min for cpt in cpts]) / 1e3) + 1
         ],
-        tick0=ceil(max([cpt.parsed_cpt.elevation[0] for cpt in cpts]) / 1e3) + 1,
+        tick0=ceil(max([cpt.parsed_cpt.elevation[0] if cpt.parsed_cpt.elevation[0] else sys.float_info.min for cpt in cpts]) / 1e3) + 1,
         dtick=1
     )
 

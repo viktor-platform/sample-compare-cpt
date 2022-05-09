@@ -20,13 +20,14 @@ from viktor import UserException
 from viktor import ViktorController
 from viktor.geo import GEFFile
 from viktor.geo import GEFParsingException
+from .parametrization import CPTParametrization
 
 
 class CPTFileController(ViktorController):
     """Controller class which acts as interface for the Sample entity type."""
     label = "CPT File"
     ADDITIONAL_COLUMNS = []
-    viktor_convert_entity_field = True
+    parametrization = CPTParametrization
 
     @ParamsFromFile(file_types=['.gef'])
     def process_file(self, file: File, **kwargs) -> dict:
