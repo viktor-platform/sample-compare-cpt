@@ -34,7 +34,6 @@ class ProjectController(ViktorController):
     children = ['CPTFile']
     show_children_as = 'Table'
     parametrization = ProjectParametrization(width=20)
-    viktor_convert_entity_field = True
 
     @WebView('Compare CPTs', duration_guess=5)
     def compare_cpts(self, params: Munch, **kwargs) -> WebResult:

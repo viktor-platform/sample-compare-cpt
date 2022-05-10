@@ -26,4 +26,4 @@ class CPT:
         params = unmunchify(cpt_params)
         self.params = params
         self.parsed_cpt = GEFData(self.params)
-        self.name = params['name']
+        self.name = params['headers']['name']
