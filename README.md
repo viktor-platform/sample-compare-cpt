@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/SDK-v12.9.0-blue) <Please check version is the same as specified in requirements.txt>
+![](https://img.shields.io/badge/SDK-v13.0.0-blue) <Please check version is the same as specified in requirements.txt>
 
 # Compare CPT files
 This sample app shows how to compare two CPT's (.gef) 
