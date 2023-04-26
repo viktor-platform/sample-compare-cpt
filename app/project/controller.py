@@ -18,7 +18,7 @@ from io import StringIO
 
 from munch import Munch
 
-from viktor import UserException
+from viktor import UserError
 from viktor import ViktorController
 from viktor.core import progress_message
 from viktor.views import WebResult
@@ -48,7 +48,7 @@ class ProjectController(ViktorController):
     def get_all_cpts(params):
         """"retrieve params from selected cpts and create new cpt objects"""
         if not params.selected_cpts:
-            raise UserException('Please select CPTs for comparison')
+            raise UserError('Please select CPTs for comparison')
 
         cpts = []
         for cpt in params.selected_cpts:
