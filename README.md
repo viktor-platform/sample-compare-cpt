@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/SDK-v13.0.0-blue) <Please check version is the same as specified in requirements.txt>
+![](https://img.shields.io/badge/SDK-v14.0.0-blue) <Please check version is the same as specified in requirements.txt>
 
 # Compare CPT files
 This sample app shows how to compare two CPT's (.gef) 
@@ -15,7 +15,7 @@ here is a gif doing the folowing tasks:
 
 ![](resources/compare_cpts.gif)
 
-## App structure
+## App structure  
 
 ```
 project_folder: has projects as its children
