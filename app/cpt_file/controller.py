@@ -12,11 +12,11 @@ VIKTOR B.V. PROVIDES THIS SOFTWARE ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY 
 NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
 SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+SOFTWARE..
 """
 from viktor import File
 from viktor import ParamsFromFile
-from viktor import UserException
+from viktor import UserError
 from viktor import ViktorController
 from viktor.geo import GEFFile
 from viktor.geo import GEFParsingException
@@ -24,6 +24,7 @@ from .parametrization import CPTParametrization
 
 
 class CPTFileController(ViktorController):
+    hide_editor = True
     """Controller class which acts as interface for the Sample entity type."""
     label = "CPT File"
     ADDITIONAL_COLUMNS = []
@@ -37,6 +38,6 @@ class CPTFileController(ViktorController):
         try:
             cpt_data_object = cpt_file.parse(additional_columns=self.ADDITIONAL_COLUMNS, return_gef_data_obj=True)
         except GEFParsingException as parsing_exception:
-            raise UserException(f"CPT Parsing: {str(parsing_exception)}") from parsing_exception
+            raise UserError(f"CPT Parsing: {str(parsing_exception)}") from parsing_exception
 
         return cpt_data_object.serialize()

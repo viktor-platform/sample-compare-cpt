@@ -1,2 +1,2 @@
-# viktor==13.0.0
-plotly==5.5.0
+viktor==14.0.0
+plotly==5.14.1

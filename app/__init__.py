@@ -14,6 +14,14 @@ SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from .project_folder.controller import ProjectFolderController
-from .project.controller import ProjectController
-from .cpt_file.controller import CPTFileController
+from .project_folder.controller import ProjectFolderController as ProjectFolder
+from .project.controller import ProjectController as Project
+from .cpt_file.controller import CPTFileController as CPTFile
+
+from viktor import InitialEntity
+
+initial_entities = [
+    InitialEntity('ProjectFolder', name='Projects', children=[
+        InitialEntity('Project', name='Test Project', params='../manifest/fixtures/project_1.json')
+    ])
+]
